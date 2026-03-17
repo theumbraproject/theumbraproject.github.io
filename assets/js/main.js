@@ -4,16 +4,16 @@
 // ── SHARED HTML ──────────────────────────────────────────────
 var HEADER = `
 <header id="hdr">
-  <a href="/index.html" class="logo">U<em>◆</em>MBRA</a>
+  <a href="index.html" class="logo">U<em>◆</em>MBRA</a>
   <button class="nav-toggle" id="navToggle" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
   <nav id="nav">
-    <a href="/index.html">Home</a>
-    <a href="/presence.html">Presence</a>
-    <a href="/work.html">Work</a>
-    <a href="/project.html">The Project</a>
-    <a href="/contact.html">Signal</a>
+    <a href="index.html">Home</a>
+    <a href="presence.html">Presence</a>
+    <a href="work.html">Work</a>
+    <a href="project.html">The Project</a>
+    <a href="contact.html">Signal</a>
   </nav>
 </header>`;
 
@@ -23,7 +23,7 @@ var FOOTER = `
     <div class="footer-logo">U<em>◆</em>MBRA</div>
     <div class="footer-copy">© MMXXV · All rights withheld</div>
   </div>
-  <a href="/contact.html" class="footer-signal">Initiate Signal →</a>
+  <a href="contact.html" class="footer-signal">Initiate Signal →</a>
 </footer>`;
 
 var OVERLAY = `
@@ -44,37 +44,55 @@ var fs = document.getElementById('footer-slot');
 if(fs) fs.outerHTML = FOOTER;
 
 // ── ACTIVE NAV ───────────────────────────────────────────────
-var path = window.location.pathname.split('/').pop() || 'index.html';
+var path = window.location.pathname.split('/').pop() || 'index.html'; if(!path || path==='') path='index.html';
 document.querySelectorAll('nav a').forEach(function(a){
   if(a.getAttribute('href').split('/').pop() === path) a.classList.add('active');
 });
 
 // ── CURSOR ───────────────────────────────────────────────────
-var cur  = document.getElementById('cur');
-var ring = document.getElementById('cur-r');
-var mx = window.innerWidth/2, my = window.innerHeight/2;
-var rx = mx, ry = my, curOn = false;
+// Wait for DOM to be fully ready before grabbing cursor elements
+function initCursor(){
+  var cur  = document.getElementById('cur');
+  var ring = document.getElementById('cur-r');
+  if(!cur || !ring){ setTimeout(initCursor, 50); return; }
 
-document.addEventListener('mousemove', function(e){
-  mx = e.clientX; my = e.clientY;
-  cur.style.left = mx+'px'; cur.style.top = my+'px';
-  if(!curOn){ curOn=true; cur.style.opacity='1'; ring.style.opacity='1'; }
-});
+  var mx = window.innerWidth/2, my = window.innerHeight/2;
+  var rx = mx, ry = my, curOn = false;
 
-(function raf(){
-  rx += (mx-rx)*.1; ry += (my-ry)*.1;
-  ring.style.left = rx+'px'; ring.style.top = ry+'px';
-  requestAnimationFrame(raf);
-})();
+  // Force cursor visible and positioned correctly immediately on first move
+  document.addEventListener('mousemove', function(e){
+    mx = e.clientX; my = e.clientY;
+    cur.style.left = mx+'px';
+    cur.style.top  = my+'px';
+    if(!curOn){
+      curOn = true;
+      cur.style.opacity  = '1';
+      ring.style.opacity = '1';
+    }
+  });
 
-function applyHover(el){
-  el.addEventListener('mouseenter',function(){ document.body.classList.add('hov'); });
-  el.addEventListener('mouseleave',function(){ document.body.classList.remove('hov'); });
+  // Smooth ring follow on its own RAF loop
+  (function rafRing(){
+    rx += (mx-rx) * 0.1;
+    ry += (my-ry) * 0.1;
+    ring.style.left = Math.round(rx) + 'px';
+    ring.style.top  = Math.round(ry) + 'px';
+    requestAnimationFrame(rafRing);
+  })();
+
+  function applyHover(el){
+    if(el._umbraHover) return; // don't double-bind
+    el._umbraHover = true;
+    el.addEventListener('mouseenter', function(){ document.body.classList.add('hov'); });
+    el.addEventListener('mouseleave', function(){ document.body.classList.remove('hov'); });
+  }
+  function bindAll(){
+    document.querySelectorAll('a,button,input,textarea,select,.filter-btn').forEach(applyHover);
+  }
+  bindAll();
+  new MutationObserver(bindAll).observe(document.body,{childList:true,subtree:true});
 }
-document.querySelectorAll('a,button,input,textarea,select,.filter-btn').forEach(applyHover);
-new MutationObserver(function(){
-  document.querySelectorAll('a,button,input,textarea,select,.filter-btn').forEach(applyHover);
-}).observe(document.body,{childList:true,subtree:true});
+initCursor();
 
 // ── HEADER SCROLL ────────────────────────────────────────────
 window.addEventListener('scroll',function(){
