@@ -5,156 +5,110 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UMBRA · The Project</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=Cinzel:wght@900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=Cinzel:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/main.css">
-<style>
-/* HERO */
-.proj-hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 10vw;position:relative;overflow:hidden}
-#proj-canvas{position:absolute;inset:0;z-index:1;pointer-events:none}
-.proj-hero-content{position:relative;z-index:2}
-.proj-tag{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.55em;text-transform:uppercase;color:#c0392b;margin-bottom:36px;opacity:0;animation:fadeUp .8s ease .4s forwards}
-.proj-title{font-family:'Cinzel',serif;font-size:clamp(52px,11vw,140px);font-weight:900;line-height:.88;letter-spacing:-.02em;color:#eee9e0;text-transform:uppercase;opacity:0;animation:fadeUp 1s ease .7s forwards}
-.proj-title .bracket{color:rgba(192,57,43,.5)}
-.proj-divider{width:1px;height:80px;background:linear-gradient(to bottom,transparent,rgba(192,57,43,.5),transparent);margin:48px auto;opacity:0;animation:fadeUp .8s ease 1s forwards}
-.proj-lead{font-family:'DM Sans',sans-serif;font-size:clamp(16px,2vw,22px);font-weight:300;line-height:1.9;color:#888;letter-spacing:.06em;max-width:600px;margin:0 auto;opacity:0;animation:fadeUp .8s ease 1.2s forwards}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-
-/* STATUS GRID */
-.status-section{padding:0 10vw 120px}
-.status-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.04);margin-bottom:80px}
-.status-cell{background:#050505;padding:40px 28px;text-align:center}
-.sc-label{font-family:'Space Mono',monospace;font-size:7px;letter-spacing:.5em;text-transform:uppercase;color:#444;margin-bottom:14px}
-.sc-value{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.15em;color:#ccc8c0;text-transform:uppercase;line-height:1.4}
-.sc-value.red{color:#c0392b}
-
-/* BODY TEXT */
-.proj-body{padding:120px 10vw;display:grid;grid-template-columns:1fr 1.6fr;gap:100px;align-items:start}
-.pb-label{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.55em;text-transform:uppercase;color:#c0392b;margin-bottom:20px}
-.pb-sticky{position:sticky;top:140px}
-.pb-side-title{font-family:'Cinzel',serif;font-size:22px;font-weight:900;letter-spacing:.08em;color:#ccc8c0;text-transform:uppercase;line-height:1.3;margin-bottom:24px}
-.pb-side-note{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.3em;color:#444;text-transform:uppercase;line-height:2}
-.pb-right p{font-size:14px;line-height:2.4;color:#888;font-weight:300;letter-spacing:.04em;margin-bottom:28px}
-.pb-right p strong{color:#ccc8c0;font-weight:500}
-.pb-right p:last-child{margin-bottom:0}
-
-/* REDACTED BLOCK */
-.redacted-section{margin:0 10vw 160px;padding:64px;border:1px solid rgba(192,57,43,.12);background:rgba(192,57,43,.02);text-align:center;position:relative;overflow:hidden}
-.redacted-section::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(192,57,43,.015) 10px,rgba(192,57,43,.015) 11px)}
-.redacted-icon{font-family:'Bebas Neue',sans-serif;font-size:80px;color:rgba(192,57,43,.12);line-height:1;margin-bottom:24px}
-.redacted-title{font-family:'Cinzel',serif;font-size:18px;letter-spacing:.3em;color:rgba(200,196,188,.5);text-transform:uppercase;margin-bottom:16px}
-.redacted-text{font-size:12px;line-height:2.2;color:#555;letter-spacing:.06em;margin-bottom:40px;max-width:500px;margin-left:auto;margin-right:auto}
-
-@media(max-width:900px){
-  .proj-hero{padding:120px 24px}
-  .status-section{padding-left:24px;padding-right:24px}
-  .status-grid{grid-template-columns:repeat(2,1fr)}
-  .proj-body{grid-template-columns:1fr;gap:48px;padding:80px 24px}
-  .pb-sticky{position:static}
-  .redacted-section{margin:0 24px 100px;padding:40px 24px}
-}
-</style>
 </head>
 <body>
-<div id="header-slot"></div>
-<main>
-  <section class="proj-hero">
-    <canvas id="proj-canvas"></canvas>
-    <div class="proj-hero-content">
-      <div class="proj-tag">Classified Initiative · Active</div>
-      <h1 class="proj-title"><span class="bracket">[</span>&nbsp;REDACTED&nbsp;<span class="bracket">]</span></h1>
-      <div class="proj-divider"></div>
-      <p class="proj-lead">Something is being built. It does not have a public name yet. What it does — what it will be capable of — will not be announced in advance. That is intentional.</p>
-    </div>
-  </section>
+<canvas id="fx-liquid"></canvas><canvas id="fx-particles"></canvas>
+<div id="fx-vignette"></div><div id="fx-noise"></div>
+<div class="umbra-corner tl"></div><div class="umbra-corner tr"></div>
+<div class="umbra-corner bl"></div><div class="umbra-corner br"></div>
+<div id="umbra-cur"></div><div id="umbra-ring"></div>
+<div id="page-wipe"></div>
 
-  <!-- STATUS GRID -->
-  <section class="status-section">
-    <div class="status-grid sr">
-      <div class="status-cell">
-        <div class="sc-label">Status</div>
-        <div class="sc-value red">Active · In Motion</div>
-      </div>
-      <div class="status-cell">
-        <div class="sc-label">Nature</div>
-        <div class="sc-value">Artificial Intelligence</div>
-      </div>
-      <div class="status-cell">
-        <div class="sc-label">Team</div>
-        <div class="sc-value">Distributed · Exceptional</div>
-      </div>
-      <div class="status-cell">
-        <div class="sc-label">Disclosure</div>
-        <div class="sc-value">Selective · Controlled</div>
-      </div>
-    </div>
-  </section>
+<header id="site-header">
+  <a href="index.html" class="logo">U<b>◆</b>MBRA</a>
+  <button class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></button>
+  <nav id="site-nav">
+    <a href="index.html">Home</a><a href="presence.html">Presence</a>
+    <a href="work.html">Work</a>
+    <a href="project.html" class="active">The Project</a>
+    <a href="contact.html">Signal</a>
+  </nav>
+</header>
 
-  <!-- BODY -->
-  <section class="proj-body">
-    <div class="pb-sticky sr">
-      <div class="pb-label">— The Initiative</div>
-      <div class="pb-side-title">What Can Be Said</div>
-      <div class="pb-side-note">
-        Everything else is<br>
-        classified until<br>
-        the time is right.
-      </div>
-    </div>
-    <div class="pb-right">
-      <p class="sr">A group of highly intelligent individuals — each operating at the edge of their respective field — has been quietly assembled. Not through announcements. Not through job listings. Through <strong>deliberate selection by someone who knows what to look for</strong>.</p>
-      <p class="sr sr-d1">UMBRA is the orchestrating force behind it. Not a founder in the traditional sense. Not a CEO with a LinkedIn profile and a pitch deck. The <strong>connective tissue</strong>. The one who sees the whole board when everyone else sees only their piece.</p>
-      <p class="sr sr-d2">What is being built sits at the intersection of <strong>artificial intelligence and human capability</strong> — a system designed to extend what is possible for the people who use it. Not a product for everyone. A tool for operators.</p>
-      <p class="sr sr-d3">The development is real. The timeline is real. The output, when it arrives, <strong>will not require a press release</strong>. It will simply be there — working — as if it had always existed.</p>
-      <p class="sr sr-d3">Three systems are currently in active development. Two will be announced in the coming months. The third — the one that matters most — will be announced when it is ready, and not a moment before.</p>
-    </div>
-  </section>
-
-  <!-- REDACTED -->
-  <div class="redacted-section sr">
-    <div class="redacted-icon">◆</div>
-    <div class="redacted-title">Further Detail: Restricted</div>
-    <div class="redacted-text">If you are here because you were sent here, you already know how to reach UMBRA. If you found this on your own — that itself tells us something about you.</div>
-    <a href="contact.html" class="btn-primary">Initiate Signal →</a>
+<section class="project-hero">
+  <canvas id="proj-rings"></canvas>
+  <div class="project-hero-content">
+    <div class="project-tag">Classified Initiative · Active</div>
+    <h1 class="project-title"><span class="br">[</span>&nbsp;REDACTED&nbsp;<span class="br">]</span></h1>
+    <div class="project-rule"></div>
+    <p class="project-lead">Something is being built. It does not have a public name yet. What it does — what it will be capable of — will not be announced in advance. That is intentional.</p>
   </div>
-</main>
+</section>
 
-<div id="footer-slot"></div>
-<script src="assets/js/main.js" defer></script>
+<div class="project-stats">
+  <div class="pstat reveal">
+    <div class="pstat-label">Status</div>
+    <div class="pstat-value red">Active · In Motion</div>
+  </div>
+  <div class="pstat reveal d1">
+    <div class="pstat-label">Nature</div>
+    <div class="pstat-value">Artificial Intelligence</div>
+  </div>
+  <div class="pstat reveal d2">
+    <div class="pstat-label">Team</div>
+    <div class="pstat-value">Distributed · Exceptional</div>
+  </div>
+  <div class="pstat reveal d3">
+    <div class="pstat-label">Disclosure</div>
+    <div class="pstat-value">Selective · Controlled</div>
+  </div>
+</div>
+
+<section class="project-body">
+  <div class="project-sidebar reveal">
+    <div class="sidebar-eyebrow">— The Initiative</div>
+    <div class="sidebar-title">What Can Be Said</div>
+    <div class="sidebar-note">Everything else is<br>classified until<br>the time is right.</div>
+  </div>
+  <div class="project-content">
+    <p class="reveal">A group of highly intelligent individuals — each operating at the edge of their respective field — has been quietly assembled. Not through announcements. Not through job listings. Through <strong>deliberate selection by someone who knows what to look for</strong>.</p>
+    <p class="reveal d1">UMBRA is the orchestrating force behind it. Not a founder in the traditional sense. The <strong>connective tissue</strong>. The one who sees the whole board when everyone else sees only their piece.</p>
+    <p class="reveal d2">What is being built sits at the intersection of <strong>artificial intelligence and human capability</strong> — a system designed to extend what is possible for the people who use it.</p>
+    <p class="reveal d3">Three systems are currently in active development. Two will be announced in the coming months. The third — the one that matters most — will be announced when it is ready, and not a moment before.</p>
+  </div>
+</section>
+
+<div class="classified-block reveal">
+  <div class="classified-icon">◆</div>
+  <div class="classified-title">Further Detail: Restricted</div>
+  <div class="classified-text">If you are here because you were sent here, you already know how to reach UMBRA. If you found this on your own — that itself tells us something about you.</div>
+  <a href="contact.html" class="btn">Initiate Signal →</a>
+</div>
+
+<footer id="site-footer">
+  <div><div class="footer-logo">U<b>◆</b>MBRA</div><div class="footer-copy">© MMXXV · All rights withheld</div></div>
+  <a href="contact.html" class="footer-link">Initiate Signal →</a>
+</footer>
+
+<script src="assets/js/main.js"></script>
 <script>
-// Pulsing rings on project hero canvas
 (function(){
-  var c=document.getElementById('proj-canvas');
-  if(!c)return;
-  var ctx=c.getContext('2d');
-  var W,H;
-  function resize(){W=c.width=c.parentElement.offsetWidth;H=c.height=c.parentElement.offsetHeight}
+  var c = document.getElementById('proj-rings');
+  if(!c) return;
+  var ctx = c.getContext('2d'), W, H;
+  function resize(){ W = c.width = c.parentElement.offsetWidth; H = c.height = c.parentElement.offsetHeight; }
   resize();
-  window.addEventListener('resize',resize,{passive:true});
-  var rings=[];
-  for(var i=0;i<6;i++) rings.push({r:i*60+40,phase:i*(Math.PI/3),speed:.004+i*.001});
-  function draw(){
+  window.addEventListener('resize', resize, {passive:true});
+  var rings = [];
+  for(var i=0;i<8;i++) rings.push({r:i*55+30, phase:i*(Math.PI/4), spd:.003+i*.0005});
+  (function draw(){
     ctx.clearRect(0,0,W,H);
-    var cx=W/2,cy=H/2;
     rings.forEach(function(ring){
-      ring.phase+=ring.speed;
-      var pulse=.5+.5*Math.sin(ring.phase);
-      var alpha=(1-ring.r/(rings.length*60+40))*.06*pulse+.02;
-      ctx.beginPath();
-      ctx.arc(cx,cy,ring.r,0,Math.PI*2);
+      ring.phase+=ring.spd;
+      var pulse = .5+.5*Math.sin(ring.phase);
+      var alpha = (1-ring.r/(rings.length*55+30))*.06*pulse+.018;
+      ctx.beginPath(); ctx.arc(W/2,H/2,ring.r,0,Math.PI*2);
       ctx.strokeStyle='rgba(192,57,43,'+alpha.toFixed(3)+')';
-      ctx.lineWidth=1;
-      ctx.stroke();
-      ring.r+=.12;
+      ctx.lineWidth=1; ctx.stroke();
+      ring.r+=.1;
       if(ring.r>Math.max(W,H)) ring.r=20;
     });
-    // center dot
-    ctx.beginPath();
-    ctx.arc(cx,cy,4,0,Math.PI*2);
-    ctx.fillStyle='rgba(192,57,43,0.5)';
-    ctx.fill();
+    ctx.beginPath(); ctx.arc(W/2,H/2,5,0,Math.PI*2);
+    ctx.fillStyle='rgba(192,57,43,0.45)'; ctx.fill();
     requestAnimationFrame(draw);
-  }
-  draw();
+  })();
 })();
 </script>
 </body>

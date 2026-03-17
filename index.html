@@ -6,447 +6,311 @@
 <title>UMBRA</title>
 <meta name="description" content="The architecture of shadow. Orchestrating from the unseen.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=Cinzel:wght@900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --void:#050505;
-  --ember:#c0392b;
-  --ember2:#e74c3c;
-  --bone:#ccc8c0;
-  --chalk:#eee9e0;
-  --smoke:#555;
-  --ghost:#888;
-}
-html{scroll-behavior:smooth;overflow-x:hidden}
-body{background:var(--void);color:var(--bone);font-family:'DM Sans',sans-serif;overflow-x:hidden;cursor:none}
-a{color:inherit;text-decoration:none}
-button{background:none;border:none;cursor:none;font-family:inherit}
-
-/* CURSOR */
-#cur{width:8px;height:8px;background:var(--ember);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:exclusion;transition:width .2s,height .2s}
-#cur-r{width:36px;height:36px;border:1px solid rgba(192,57,43,.35);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .25s,height .25s,border-color .25s}
-body.hov #cur{width:14px;height:14px}
-body.hov #cur-r{width:56px;height:56px;border-color:rgba(192,57,43,.15)}
-
-::-webkit-scrollbar{width:2px}
-::-webkit-scrollbar-track{background:var(--void)}
-::-webkit-scrollbar-thumb{background:var(--ember)}
-::selection{background:var(--ember);color:var(--chalk)}
-
-/* CORNERS */
-.corner{position:fixed;width:20px;height:20px;z-index:800;pointer-events:none;opacity:.22}
-.corner.tl{top:16px;left:16px;border-top:1px solid var(--bone);border-left:1px solid var(--bone)}
-.corner.tr{top:16px;right:16px;border-top:1px solid var(--bone);border-right:1px solid var(--bone)}
-.corner.bl{bottom:16px;left:16px;border-bottom:1px solid var(--bone);border-left:1px solid var(--bone)}
-.corner.br{bottom:16px;right:16px;border-bottom:1px solid var(--bone);border-right:1px solid var(--bone)}
-
-/* HEADER */
-header{position:fixed;top:0;left:0;right:0;z-index:700;display:flex;align-items:center;justify-content:space-between;padding:24px 48px;background:rgba(5,5,5,0);transition:background .5s,border-color .5s;border-bottom:1px solid transparent}
-header.scrolled{background:rgba(5,5,5,.92);backdrop-filter:blur(20px);border-color:rgba(255,255,255,.04)}
-.logo{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.55em;color:var(--ghost);text-transform:uppercase;transition:color .3s}
-.logo:hover{color:var(--bone)}
-.logo em{color:var(--ember);font-style:normal}
-nav{display:flex;gap:36px}
-nav a{font-size:9px;letter-spacing:.38em;text-transform:uppercase;color:var(--smoke);transition:color .3s;font-family:'Space Mono',monospace}
-nav a:hover,nav a.active{color:var(--bone)}
-nav a.active{border-bottom:1px solid var(--ember);padding-bottom:2px}
-.nav-toggle{display:none;flex-direction:column;gap:5px;padding:4px}
-.nav-toggle span{display:block;width:22px;height:1px;background:var(--ghost);transition:all .3s}
-.nav-toggle.open span:nth-child(1){transform:rotate(45deg) translate(4px,4px)}
-.nav-toggle.open span:nth-child(2){opacity:0}
-.nav-toggle.open span:nth-child(3){transform:rotate(-45deg) translate(4px,-4px)}
-
-/* ═══ HERO ═══ */
-#hero{position:relative;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#050505}
-
-/* The UMBRA title — hidden beneath the smoke */
-#umbra-title{
-  position:absolute;z-index:1;
-  font-family:'Cinzel',serif;
-  font-size:clamp(80px,16vw,200px);
-  font-weight:900;
-  letter-spacing:.12em;
-  color:var(--chalk);
-  text-transform:uppercase;
-  user-select:none;
-  text-align:center;
-  -webkit-mask-image:radial-gradient(ellipse 0px 0px at 50% 50%, black 0%, transparent 0%);
-  mask-image:radial-gradient(ellipse 0px 0px at 50% 50%, black 0%, transparent 0%);
-  transition:none;
-}
-/* Glow is now painted on its own canvas — no rectangle artifacts */
-#glow-canvas{
-  position:absolute;inset:0;z-index:0;
-  pointer-events:none;
-}
-
-/* The smoke canvas — sits on top of the title */
-#smoke-canvas{position:absolute;inset:0;z-index:3}
-
-/* Neural net — behind smoke, above title */
-#neural-canvas{position:absolute;inset:0;z-index:2;opacity:.4}
-
-/* Vignette */
-#hero-vignette{position:absolute;inset:0;z-index:4;pointer-events:none;background:radial-gradient(ellipse at center,transparent 25%,rgba(5,5,5,.8) 100%)}
-
-/* Hero UI content */
-.hero-ui{position:absolute;z-index:5;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:13vh;pointer-events:none}
-.hero-eyebrow{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.55em;text-transform:uppercase;color:rgba(192,57,43,.7);margin-bottom:20px;opacity:0;animation:fadeUp .8s ease 1s forwards}
-.hero-sub{font-size:12px;font-weight:300;line-height:2;color:rgba(136,136,136,.7);letter-spacing:.12em;text-align:center;opacity:0;animation:fadeUp .8s ease 1.3s forwards}
-.hero-hint{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);z-index:5;display:flex;flex-direction:column;align-items:center;gap:10px;opacity:0;animation:fadeUp .8s ease 2s forwards}
-.hint-dot{width:5px;height:5px;border-radius:50%;background:var(--ember);animation:scrollBounce 2s ease-in-out infinite}
-.hint-txt{font-family:'Space Mono',monospace;font-size:7px;letter-spacing:.45em;color:var(--smoke);text-transform:uppercase}
-@keyframes scrollBounce{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(8px);opacity:1}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-
-/* ═══ MARQUEE ═══ */
-.marquee-section{overflow:hidden;border-top:1px solid rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.04);padding:18px 0;background:rgba(5,5,5,.7)}
-.marquee-track{display:flex;gap:52px;animation:marq 26s linear infinite;white-space:nowrap;width:max-content}
-.marquee-track span{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:.32em;color:var(--smoke);flex-shrink:0}
-.marquee-track em{color:var(--ember);font-style:normal}
-@keyframes marq{to{transform:translateX(-50%)}}
-
-/* ═══ DOCTRINE ═══ */
-.section-doctrine{padding:140px 10vw;display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center}
-.doctrine-label{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.55em;text-transform:uppercase;color:var(--ember);margin-bottom:24px}
-.doctrine-heading{font-family:'Cinzel',serif;font-size:clamp(30px,4vw,52px);font-weight:900;line-height:1.05;letter-spacing:-.01em;color:var(--chalk);text-transform:uppercase}
-.reveal-word{display:inline-block;overflow:hidden;vertical-align:bottom}
-.reveal-word span{display:inline-block;transform:translateY(105%);transition:transform .8s cubic-bezier(.76,0,.24,1)}
-.reveal-word.visible span{transform:translateY(0)}
-.doctrine-right p{font-size:13px;line-height:2.3;color:var(--ghost);font-weight:300;letter-spacing:.04em;margin-bottom:24px}
-.doctrine-right p strong{color:var(--bone);font-weight:500}
-
-/* ═══ PILLARS ═══ */
-.section-pillars{padding:0 10vw 140px}
-.pillars-header{display:flex;align-items:center;margin-bottom:60px;gap:24px}
-.pillars-label{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.55em;text-transform:uppercase;color:var(--ember);white-space:nowrap}
-.pillars-line{flex:1;height:1px;background:rgba(255,255,255,.05)}
-.pillars-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.04)}
-.pillar{background:var(--void);padding:52px 40px;position:relative;overflow:hidden;transition:background .5s}
-.pillar::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(192,57,43,.05) 0%,transparent 60%);opacity:0;transition:opacity .5s}
-.pillar:hover{background:#0a0a0a}
-.pillar:hover::before{opacity:1}
-.pillar-num{font-family:'Bebas Neue',sans-serif;font-size:80px;color:rgba(192,57,43,.1);line-height:1;margin-bottom:24px;transition:color .4s}
-.pillar:hover .pillar-num{color:rgba(192,57,43,.22)}
-.pillar-title{font-family:'Cinzel',serif;font-size:14px;letter-spacing:.2em;color:var(--bone);text-transform:uppercase;margin-bottom:16px}
-.pillar-text{font-size:12px;line-height:2.1;color:var(--ghost);font-weight:300;letter-spacing:.03em}
-.pillar-bar{height:1px;background:rgba(192,57,43,0);margin-top:32px;transition:background .5s}
-.pillar:hover .pillar-bar{background:rgba(192,57,43,.4)}
-
-/* ═══ TYPED ═══ */
-.section-type{padding:140px 10vw;background:#080808;border-top:1px solid rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.04);text-align:center}
-.type-label{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.55em;text-transform:uppercase;color:var(--ember);margin-bottom:40px}
-.type-statement{font-family:'Cinzel',serif;font-size:clamp(18px,3.2vw,44px);font-weight:900;line-height:1.4;letter-spacing:.04em;color:var(--chalk);max-width:880px;margin:0 auto}
-#typed-text{border-right:2px solid var(--ember);padding-right:4px;animation:blink .8s infinite}
-@keyframes blink{0%,100%{border-color:var(--ember)}50%{border-color:transparent}}
-
-/* ═══ WORK ═══ */
-.section-work{padding:140px 10vw}
-.work-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:60px}
-.work-label{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.55em;text-transform:uppercase;color:var(--ember)}
-.work-see-all{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.35em;color:var(--smoke);text-transform:uppercase;transition:color .3s}
-.work-see-all:hover{color:var(--ember)}
-.work-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
-.work-item{position:relative;overflow:hidden;aspect-ratio:3/4;background:#111;display:block}
-.work-item:first-child{grid-row:span 2;aspect-ratio:auto}
-.work-svg{width:100%;height:100%;filter:brightness(.45) saturate(.1);transition:filter .7s,transform .9s cubic-bezier(.25,.46,.45,.94)}
-.work-item:hover .work-svg{filter:brightness(.25) saturate(0);transform:scale(1.06)}
-.work-overlay{position:absolute;inset:0;padding:32px;display:flex;flex-direction:column;justify-content:flex-end;opacity:0;transition:opacity .45s;background:linear-gradient(to top,rgba(5,5,5,.8) 0%,transparent 60%)}
-.work-item:hover .work-overlay{opacity:1}
-.work-num{font-family:'Bebas Neue',sans-serif;font-size:80px;color:rgba(192,57,43,.12);position:absolute;top:20px;right:20px;line-height:1}
-.work-title{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.18em;color:var(--chalk);text-transform:uppercase;margin-bottom:6px}
-.work-meta{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.35em;color:var(--ember);text-transform:uppercase}
-
-/* ═══ CTA ═══ */
-.section-signal{padding:160px 10vw;text-align:center;background:radial-gradient(ellipse at center,rgba(192,57,43,.06) 0%,transparent 70%);border-top:1px solid rgba(255,255,255,.04)}
-.signal-label{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.55em;text-transform:uppercase;color:var(--smoke);margin-bottom:32px}
-.signal-divider{width:1px;height:60px;background:linear-gradient(to bottom,transparent,var(--ember),transparent);margin:0 auto 48px}
-.signal-heading{font-family:'Cinzel',serif;font-size:clamp(32px,5.5vw,76px);font-weight:900;letter-spacing:-.01em;color:var(--chalk);text-transform:uppercase;margin-bottom:24px;line-height:1.05}
-.signal-sub{font-size:13px;font-weight:300;color:var(--ghost);letter-spacing:.08em;margin-bottom:52px}
-.btn-primary{display:inline-flex;align-items:center;gap:12px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.4em;text-transform:uppercase;color:var(--chalk);padding:16px 36px;border:1px solid rgba(255,255,255,.15);position:relative;overflow:hidden;transition:border-color .4s,color .4s}
-.btn-primary::before{content:'';position:absolute;inset:0;background:var(--ember);transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.76,0,.24,1);z-index:-1}
-.btn-primary:hover{border-color:var(--ember)}
-.btn-primary:hover::before{transform:scaleX(1)}
-
-/* FOOTER */
-footer{border-top:1px solid rgba(255,255,255,.04);padding:40px 10vw;display:flex;justify-content:space-between;align-items:center;background:var(--void);position:relative;z-index:10}
-.footer-logo{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.55em;color:rgba(255,255,255,.12);text-transform:uppercase;margin-bottom:5px}
-.footer-logo em{color:rgba(192,57,43,.3);font-style:normal}
-.footer-copy{font-family:'Space Mono',monospace;font-size:7px;letter-spacing:.35em;color:rgba(255,255,255,.1);text-transform:uppercase}
-.footer-signal{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.4em;color:var(--smoke);text-transform:uppercase;transition:color .3s}
-.footer-signal:hover{color:var(--ember)}
-
-/* SCROLL REVEAL */
-.sr{opacity:0;transform:translateY(28px);transition:opacity .9s ease,transform .9s ease}
-.sr.vis{opacity:1;transform:translateY(0)}
-.sr-d1{transition-delay:.1s}.sr-d2{transition-delay:.2s}.sr-d3{transition-delay:.3s}
-
-@media(max-width:900px){
-  header{padding:20px 24px}
-  nav{display:none;position:fixed;inset:0;background:rgba(5,5,5,.98);flex-direction:column;justify-content:center;align-items:center;gap:36px;z-index:699}
-  nav.open{display:flex}
-  nav a{font-size:11px}
-  .nav-toggle{display:flex}
-  .section-doctrine{grid-template-columns:1fr;gap:48px;padding:80px 24px}
-  .pillars-grid{grid-template-columns:1fr}
-  .section-pillars,.section-work,.section-signal,.section-type{padding:80px 24px}
-  .work-grid{grid-template-columns:1fr}
-  .work-item:first-child{aspect-ratio:3/4}
-  footer{padding:32px 24px;flex-direction:column;gap:20px;text-align:center}
-}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=Cinzel:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body>
 
-<div id="header-slot"></div>
-<!-- ═══ HERO ═══ -->
-<section id="hero">
-  <canvas id="glow-canvas"></canvas>
-  <div id="umbra-title">UMBRA</div>
-  <canvas id="neural-canvas"></canvas>
-  <canvas id="smoke-canvas"></canvas>
-  <div id="hero-vignette"></div>
+<canvas id="fx-liquid"></canvas>
+<canvas id="fx-particles"></canvas>
+<div id="fx-vignette"></div>
+<div id="fx-noise"></div>
+<div class="umbra-corner tl"></div>
+<div class="umbra-corner tr"></div>
+<div class="umbra-corner bl"></div>
+<div class="umbra-corner br"></div>
+<div id="umbra-cur"></div>
+<div id="umbra-ring"></div>
+<div id="page-wipe"></div>
 
-  <div class="hero-ui">
-    <div class="hero-eyebrow">Grand Architect &nbsp;·&nbsp; Silent Orchestrator</div>
+<header id="site-header">
+  <a href="index.html" class="logo">U<b>◆</b>MBRA</a>
+  <button class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></button>
+  <nav id="site-nav">
+    <a href="index.html" class="active">Home</a>
+    <a href="presence.html">Presence</a>
+    <a href="work.html">Work</a>
+    <a href="project.html">The Project</a>
+    <a href="contact.html">Signal</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section id="hero">
+  <canvas id="hero-glow"></canvas>
+  <canvas id="hero-neural"></canvas>
+  <div id="umbra-name">UMBRA</div>
+  <canvas id="hero-smoke"></canvas>
+  <div id="hero-vignette"></div>
+  <div class="hero-bottom">
+    <div class="hero-tag">Grand Architect &nbsp;·&nbsp; Silent Orchestrator</div>
     <div class="hero-sub">Present in every outcome. Named in none.</div>
   </div>
-  <div class="hero-hint">
-    <div class="hint-dot"></div>
-    <div class="hint-txt">Reveal the Shadow</div>
+  <div class="hero-scroll-hint">
+    <div class="scroll-dot"></div>
+    <div class="scroll-label">Reveal the Shadow</div>
   </div>
 </section>
 
-<!-- ═══ MARQUEE ═══ -->
-<div class="marquee-section">
-  <div class="marquee-track">
-    <span>THE SHADOW ARCHITECTS</span><em>◆</em>
-    <span>GRAND ORCHESTRATOR</span><em>◆</em>
-    <span>INTELLIGENCE DESIGN</span><em>◆</em>
-    <span>SYSTEMIC VISION</span><em>◆</em>
-    <span>UMBRA COLLECTIVE</span><em>◆</em>
-    <span>ARTIFICIAL INTELLIGENCE</span><em>◆</em>
-    <span>THE SHADOW ARCHITECTS</span><em>◆</em>
-    <span>GRAND ORCHESTRATOR</span><em>◆</em>
-    <span>INTELLIGENCE DESIGN</span><em>◆</em>
-    <span>SYSTEMIC VISION</span><em>◆</em>
-    <span>UMBRA COLLECTIVE</span><em>◆</em>
-    <span>ARTIFICIAL INTELLIGENCE</span><em>◆</em>
+<!-- MARQUEE -->
+<div class="marquee-bar">
+  <div class="marquee-inner">
+    <span>THE SHADOW ARCHITECTS</span><b>◆</b>
+    <span>GRAND ORCHESTRATOR</span><b>◆</b>
+    <span>INTELLIGENCE DESIGN</span><b>◆</b>
+    <span>SYSTEMIC VISION</span><b>◆</b>
+    <span>UMBRA COLLECTIVE</span><b>◆</b>
+    <span>MACHINE INTELLIGENCE</span><b>◆</b>
+    <span>THE SHADOW ARCHITECTS</span><b>◆</b>
+    <span>GRAND ORCHESTRATOR</span><b>◆</b>
+    <span>INTELLIGENCE DESIGN</span><b>◆</b>
+    <span>SYSTEMIC VISION</span><b>◆</b>
+    <span>UMBRA COLLECTIVE</span><b>◆</b>
+    <span>MACHINE INTELLIGENCE</span><b>◆</b>
   </div>
 </div>
 
-<!-- ═══ DOCTRINE ═══ -->
-<section class="section-doctrine split-section">
-  <div class="split-left">
-    <div class="doctrine-label sr">— Doctrine</div>
-    <h2 class="doctrine-heading sr sr-d1">
-      <div class="reveal-word"><span>THE&nbsp;</span></div><div class="reveal-word"><span>SHADOW&nbsp;</span></div><br>
-      <div class="reveal-word"><span>IS&nbsp;THE&nbsp;</span></div><div class="reveal-word"><span>MOST</span></div><br>
-      <div class="reveal-word"><span>POWERFUL</span></div><br>
-      <div class="reveal-word"><span>POSITION.</span></div>
+<!-- DOCTRINE -->
+<section class="doctrine-section">
+  <div class="split-l">
+    <div class="doctrine-eyebrow">— Doctrine</div>
+    <h2 class="doctrine-heading">
+      <div class="word-wrap"><span>THE&nbsp;</span></div><div class="word-wrap"><span>SHADOW&nbsp;</span></div><br>
+      <div class="word-wrap"><span>IS&nbsp;THE&nbsp;</span></div><div class="word-wrap"><span>MOST</span></div><br>
+      <div class="word-wrap"><span>POWERFUL</span></div><br>
+      <div class="word-wrap"><span>POSITION.</span></div>
     </h2>
   </div>
-  <div class="doctrine-right split-right">
+  <div class="doctrine-body split-r">
     <p>The most powerful forces in the world <strong>leave no fingerprints</strong>. Every great structure has an architect no one speaks of. Every pivotal decision passes through hands no one photographs.</p>
     <p>Every system that endures was designed by someone who understood that the shadow sees everything, claims nothing, and <strong>moves everything that matters.</strong></p>
     <p>This is not anonymity born of fear. This is <strong>deliberate architecture</strong>.</p>
   </div>
 </section>
 
-<!-- ═══ PILLARS ═══ -->
-<section class="section-pillars">
-  <div class="pillars-header sr">
-    <div class="pillars-label">Domains</div>
-    <div class="pillars-line"></div>
+<!-- PILLARS -->
+<section class="pillars-section">
+  <div class="section-eyebrow reveal">
+    <div class="section-eyebrow-text">Domains</div>
+    <div class="section-eyebrow-line"></div>
   </div>
   <div class="pillars-grid">
-    <div class="pillar sr sr-d1"><div class="pillar-num">01</div><div class="pillar-title">Orchestration</div><div class="pillar-text">The invisible hand that aligns systems, people, and outcomes toward a single vector of intent.</div><div class="pillar-bar"></div></div>
-    <div class="pillar sr sr-d2"><div class="pillar-num">02</div><div class="pillar-title">Architecture</div><div class="pillar-text">Structure built to outlast its builder. Systems that function without a face attached to them.</div><div class="pillar-bar"></div></div>
-    <div class="pillar sr sr-d3"><div class="pillar-num">03</div><div class="pillar-title">Intelligence</div><div class="pillar-text">Designing minds — artificial and collective — to extend what is possible beyond the visible horizon.</div><div class="pillar-bar"></div></div>
+    <div class="pillar reveal">
+      <div class="pillar-num">01</div>
+      <div class="pillar-title">Orchestration</div>
+      <div class="pillar-text">The invisible hand that aligns systems, people, and outcomes toward a single vector of intent.</div>
+      <div class="pillar-bar"></div>
+    </div>
+    <div class="pillar reveal d1">
+      <div class="pillar-num">02</div>
+      <div class="pillar-title">Architecture</div>
+      <div class="pillar-text">Structure built to outlast its builder. Systems that function without a face attached to them.</div>
+      <div class="pillar-bar"></div>
+    </div>
+    <div class="pillar reveal d2">
+      <div class="pillar-num">03</div>
+      <div class="pillar-title">Intelligence</div>
+      <div class="pillar-text">Designing minds — artificial and collective — to extend what is possible beyond the visible horizon.</div>
+      <div class="pillar-bar"></div>
+    </div>
   </div>
 </section>
 
-<!-- ═══ TYPED ═══ -->
-<section class="section-type">
-  <div class="type-label sr">— In Motion —</div>
-  <div class="type-statement sr sr-d1">"<span id="typed-text"></span>"</div>
+<!-- TYPED -->
+<section class="typed-section">
+  <div class="typed-label reveal">— In Motion —</div>
+  <div class="typed-text reveal d1">"<span id="typed-cursor"></span>"</div>
 </section>
 
-<!-- ═══ WORK ═══ -->
-<section class="section-work">
-  <div class="work-header sr"><div class="work-label">Selected Work</div><a href="work.html" class="work-see-all">View All →</a></div>
-  <div class="work-grid">
-    <a href="work.html" class="work-item sr">
-      <svg class="work-svg" viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="600" fill="#0a0a0a"/><line x1="0" y1="0" x2="400" y2="600" stroke="rgba(192,57,43,0.1)" stroke-width="1"/><line x1="400" y1="0" x2="0" y2="600" stroke="rgba(192,57,43,0.1)" stroke-width="1"/><rect x="80" y="120" width="240" height="360" fill="none" stroke="rgba(192,57,43,0.18)" stroke-width="0.5"/><rect x="100" y="140" width="200" height="320" fill="none" stroke="rgba(192,57,43,0.08)" stroke-width="0.5"/><circle cx="200" cy="300" r="60" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="0.5"/><circle cx="200" cy="300" r="6" fill="rgba(192,57,43,0.5)"/></svg>
-      <div class="work-num">01</div>
-      <div class="work-overlay"><div class="work-title">Intelligence Architecture</div><div class="work-meta">AI Systems · Classified</div></div>
+<!-- WORK PREVIEW -->
+<section class="work-preview-section">
+  <div class="work-preview-header reveal">
+    <div class="work-preview-label">Selected Work</div>
+    <a href="work.html" class="work-preview-link">View All →</a>
+  </div>
+  <div class="preview-grid">
+    <a href="work.html" class="preview-item reveal">
+      <svg viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg">
+        <rect width="400" height="600" fill="#0a0a0a"/>
+        <line x1="0" y1="0" x2="400" y2="600" stroke="rgba(192,57,43,0.1)" stroke-width="1"/>
+        <line x1="400" y1="0" x2="0" y2="600" stroke="rgba(192,57,43,0.1)" stroke-width="1"/>
+        <rect x="80" y="120" width="240" height="360" fill="none" stroke="rgba(192,57,43,0.2)" stroke-width="0.5"/>
+        <circle cx="200" cy="300" r="60" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="0.5"/>
+        <circle cx="200" cy="300" r="6" fill="rgba(192,57,43,0.5)"/>
+      </svg>
+      <div class="preview-num">01</div>
+      <div class="preview-overlay">
+        <div class="preview-title">Intelligence Architecture</div>
+        <div class="preview-cat">AI Systems · Classified</div>
+      </div>
     </a>
-    <a href="work.html" class="work-item sr sr-d1">
-      <svg class="work-svg" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="300" fill="#0d0d0d"/><circle cx="200" cy="150" r="120" fill="none" stroke="rgba(192,57,43,0.07)" stroke-width="50"/><circle cx="200" cy="150" r="70" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/><circle cx="200" cy="150" r="6" fill="rgba(192,57,43,0.4)"/></svg>
-      <div class="work-num">02</div>
-      <div class="work-overlay"><div class="work-title">Systemic Orchestration</div><div class="work-meta">Strategy · Ongoing</div></div>
+    <a href="work.html" class="preview-item reveal d1">
+      <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+        <rect width="400" height="300" fill="#0d0d0d"/>
+        <circle cx="200" cy="150" r="120" fill="none" stroke="rgba(192,57,43,0.07)" stroke-width="50"/>
+        <circle cx="200" cy="150" r="70" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+        <circle cx="200" cy="150" r="6" fill="rgba(192,57,43,0.4)"/>
+      </svg>
+      <div class="preview-num">02</div>
+      <div class="preview-overlay">
+        <div class="preview-title">Systemic Orchestration</div>
+        <div class="preview-cat">Strategy · Ongoing</div>
+      </div>
     </a>
-    <a href="work.html" class="work-item sr sr-d2">
-      <svg class="work-svg" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="300" fill="#111"/><polygon points="200,40 360,260 40,260" fill="none" stroke="rgba(192,57,43,0.18)" stroke-width="0.5"/><polygon points="200,90 310,260 90,260" fill="none" stroke="rgba(192,57,43,0.1)" stroke-width="0.5"/><polygon points="200,140 260,260 140,260" fill="none" stroke="rgba(192,57,43,0.05)" stroke-width="0.5"/><circle cx="200" cy="40" r="4" fill="rgba(192,57,43,0.5)"/></svg>
-      <div class="work-num">03</div>
-      <div class="work-overlay"><div class="work-title">Strategic Foundations</div><div class="work-meta">Design · Redacted</div></div>
+    <a href="work.html" class="preview-item reveal d2">
+      <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+        <rect width="400" height="300" fill="#111"/>
+        <polygon points="200,40 360,260 40,260" fill="none" stroke="rgba(192,57,43,0.18)" stroke-width="0.5"/>
+        <polygon points="200,90 310,260 90,260" fill="none" stroke="rgba(192,57,43,0.1)" stroke-width="0.5"/>
+        <circle cx="200" cy="40" r="4" fill="rgba(192,57,43,0.5)"/>
+      </svg>
+      <div class="preview-num">03</div>
+      <div class="preview-overlay">
+        <div class="preview-title">Strategic Foundations</div>
+        <div class="preview-cat">Design · Redacted</div>
+      </div>
     </a>
   </div>
 </section>
 
-<!-- ═══ CTA ═══ -->
-<section class="section-signal">
-  <div class="signal-label sr">Initiate Contact</div>
-  <div class="signal-divider sr sr-d1"></div>
-  <h2 class="signal-heading sr sr-d2">IF YOU ARE<br>MEANT TO KNOW,<br>YOU ALREADY DO.</h2>
-  <p class="signal-sub sr sr-d3">All communications treated as confidential by default.</p>
-  <a href="contact.html" class="btn-primary sr sr-d3">Transmit Signal →</a>
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-eyebrow reveal">Initiate Contact</div>
+  <div class="cta-divider reveal d1"></div>
+  <h2 class="cta-heading reveal d2">IF YOU ARE<br>MEANT TO KNOW,<br>YOU ALREADY DO.</h2>
+  <p class="cta-sub reveal d3">All communications treated as confidential by default.</p>
+  <a href="contact.html" class="btn reveal d3">Transmit Signal →</a>
 </section>
 
-<div id="footer-slot"></div>
+<footer id="site-footer">
+  <div>
+    <div class="footer-logo">U<b>◆</b>MBRA</div>
+    <div class="footer-copy">© MMXXV · All rights withheld</div>
+  </div>
+  <a href="contact.html" class="footer-link">Initiate Signal →</a>
+</footer>
+
+<script src="assets/js/main.js"></script>
 <script>
-// Wait for main.js to inject DOM, then init hero
-function initHero(){
-  var hero = document.getElementById('hero');
-  if(!hero){ setTimeout(initHero, 80); return; }
+/* HERO SMOKE REVEAL — self contained */
+(function(){
+  var hero   = document.getElementById('hero');
+  var sCanvas = document.getElementById('hero-smoke');
+  var nCanvas = document.getElementById('hero-neural');
+  var gCanvas = document.getElementById('hero-glow');
+  var nameEl  = document.getElementById('umbra-name');
+  if(!hero||!sCanvas||!nCanvas||!gCanvas||!nameEl) return;
 
-  var smokeCanvas  = document.getElementById('smoke-canvas');
-  var neuralCanvas = document.getElementById('neural-canvas');
-  var glowCanvas   = document.getElementById('glow-canvas');
-  var titleEl      = document.getElementById('umbra-title');
-
-  if(!smokeCanvas||!neuralCanvas||!glowCanvas||!titleEl){
-    setTimeout(initHero,80); return;
-  }
-
-  var sctx = smokeCanvas.getContext('2d');
-  var nctx = neuralCanvas.getContext('2d');
-  var gctx = glowCanvas.getContext('2d');
+  var sc = sCanvas.getContext('2d');
+  var nc = nCanvas.getContext('2d');
+  var gc = gCanvas.getContext('2d');
   var W, H;
 
   function resize(){
-    W = smokeCanvas.width  = neuralCanvas.width  = glowCanvas.width  = hero.offsetWidth;
-    H = smokeCanvas.height = neuralCanvas.height = glowCanvas.height = hero.offsetHeight;
+    W = sCanvas.width = nCanvas.width = gCanvas.width = hero.offsetWidth;
+    H = sCanvas.height = nCanvas.height = gCanvas.height = hero.offsetHeight;
   }
   resize();
   window.addEventListener('resize', resize, {passive:true});
 
-  // ── MOUSE TRACKING ──
-  var heroMx = W/2, heroMy = H/2, heroActive = false;
+  /* mouse */
+  var mx = -9999, my = -9999, active = false;
+  var revX = W/2, revY = H/2, revR = 0;
+  var tRevX = W/2, tRevY = H/2, tRevR = 0;
+
   hero.addEventListener('mousemove', function(e){
     var r = hero.getBoundingClientRect();
-    heroMx = e.clientX - r.left;
-    heroMy = e.clientY - r.top;
-    heroActive = true;
+    mx = e.clientX - r.left;
+    my = e.clientY - r.top;
+    active = true;
   });
-  hero.addEventListener('mouseleave', function(){ heroActive = false; });
+  hero.addEventListener('mouseleave', function(){ active = false; });
 
-  // ── REVEAL MASK ──
-  var revealX = W/2, revealY = H/2, revealR = 0;
-  var tRevealX = W/2, tRevealY = H/2, tRevealR = 0;
-
-  function updateReveal(){
-    if(heroActive){
-      tRevealX = heroMx; tRevealY = heroMy;
-      tRevealR = Math.min(W,H) * 0.38;
-    } else {
-      tRevealR = 0;
-    }
-    revealX += (tRevealX - revealX) * 0.08;
-    revealY += (tRevealY - revealY) * 0.08;
-    revealR += (tRevealR - revealR) * 0.06;
-
-    var rx = Math.max(0, revealR) * 1.6;
-    var ry = Math.max(0, revealR);
-
-    var mask = 'radial-gradient(ellipse ' + rx.toFixed(1) + 'px ' + ry.toFixed(1) + 'px at '
-      + revealX.toFixed(1) + 'px ' + revealY.toFixed(1) + 'px, '
-      + 'black 30%, rgba(0,0,0,0.4) 65%, transparent 100%)';
-    titleEl.style.webkitMaskImage = mask;
-    titleEl.style.maskImage = mask;
-
-    // Glow canvas
-    gctx.clearRect(0,0,W,H);
-    if(revealR > 2){
-      var gr = revealR * 2.2;
-      var intensity = Math.min(1, revealR / (Math.min(W,H) * 0.38));
-      var g = gctx.createRadialGradient(revealX,revealY,0,revealX,revealY,gr);
-      g.addColorStop(0,   'rgba(192,57,43,' + (intensity*.18).toFixed(3) + ')');
-      g.addColorStop(0.35,'rgba(160,40,30,' + (intensity*.08).toFixed(3) + ')');
-      g.addColorStop(0.7, 'rgba(100,20,15,' + (intensity*.03).toFixed(3) + ')');
-      g.addColorStop(1,   'rgba(0,0,0,0)');
-      gctx.beginPath();
-      gctx.arc(revealX, revealY, gr, 0, Math.PI*2);
-      gctx.fillStyle = g;
-      gctx.fill();
-    }
-  }
-
-  // ── SMOKE ──
+  /* smoke */
   var smokes = [];
   function Smoke(){
-    this.reset = function(fromBottom){
-      this.x    = Math.random() * W;
-      this.y    = fromBottom ? H + 80 + Math.random()*100 : Math.random()*H;
-      this.vx   = (Math.random()-.5) * 0.4;
-      this.vy   = -(Math.random()*.55 + .1);
-      this.r    = Math.random()*220 + 80;
-      this.life = fromBottom ? 0 : Math.random()*500;
-      this.maxLife  = Math.random()*500 + 300;
-      this.maxAlpha = Math.random()*.042 + .012;
-      this.wobble   = Math.random()*Math.PI*2;
-      this.wobbleSpd= Math.random()*.006 + .002;
-      this.rot      = Math.random()*Math.PI*2;
-      this.rotSpd   = (Math.random()-.5)*.003;
-      this.tint     = Math.random()<.25 ? '192,57,43' : '55,50,50';
+    this.reset = function(fb){
+      this.x  = Math.random()*W;
+      this.y  = fb ? H+90 : Math.random()*H;
+      this.vx = (Math.random()-.5)*.38;
+      this.vy = -(Math.random()*.5+.12);
+      this.r  = Math.random()*200+80;
+      this.life = fb ? 0 : Math.random()*500;
+      this.maxLife = Math.random()*480+280;
+      this.maxA = Math.random()*.04+.01;
+      this.wobble = Math.random()*Math.PI*2;
+      this.ws = Math.random()*.006+.002;
+      this.rot = Math.random()*Math.PI*2;
+      this.rs = (Math.random()-.5)*.003;
+      this.tint = Math.random()<.25 ? '192,57,43' : '52,48,48';
     };
     this.reset(false);
   }
-  for(var i=0;i<36;i++) smokes.push(new Smoke());
+  for(var i=0;i<34;i++) smokes.push(new Smoke());
 
-  function drawSmoke(){
-    sctx.clearRect(0,0,W,H);
+  /* nodes */
+  var nodes = [];
+  for(var j=0;j<46;j++) nodes.push({
+    x:Math.random()*800, y:Math.random()*600,
+    vx:(Math.random()-.5)*.28, vy:(Math.random()-.5)*.28,
+    r:Math.random()*1.4+.4, pulse:Math.random()*Math.PI*2
+  });
+
+  function update(){
+    /* reveal */
+    tRevX = active ? mx : W/2;
+    tRevY = active ? my : H/2;
+    tRevR = active ? Math.min(W,H)*.36 : 0;
+    revX += (tRevX-revX)*.08;
+    revY += (tRevY-revY)*.08;
+    revR += (tRevR-revR)*.06;
+
+    var rx = Math.max(0,revR)*1.55;
+    var ry = Math.max(0,revR);
+    var mask = 'radial-gradient(ellipse '+rx.toFixed(1)+'px '+ry.toFixed(1)+'px at '
+      +revX.toFixed(1)+'px '+revY.toFixed(1)+'px, black 28%, rgba(0,0,0,.35) 62%, transparent 100%)';
+    nameEl.style.webkitMaskImage = mask;
+    nameEl.style.maskImage = mask;
+
+    /* glow */
+    gc.clearRect(0,0,W,H);
+    if(revR>3){
+      var gr = revR*2.1;
+      var intensity = Math.min(1, revR/(Math.min(W,H)*.36));
+      var g = gc.createRadialGradient(revX,revY,0,revX,revY,gr);
+      g.addColorStop(0, 'rgba(192,57,43,'+(intensity*.16).toFixed(3)+')');
+      g.addColorStop(.4,'rgba(150,35,25,'+(intensity*.07).toFixed(3)+')');
+      g.addColorStop(.75,'rgba(80,15,10,'+(intensity*.025).toFixed(3)+')');
+      g.addColorStop(1,  'rgba(0,0,0,0)');
+      gc.beginPath(); gc.arc(revX,revY,gr,0,Math.PI*2);
+      gc.fillStyle=g; gc.fill();
+    }
+
+    /* smoke draw */
+    sc.clearRect(0,0,W,H);
     smokes.forEach(function(p){
-      p.life++; p.wobble+=p.wobbleSpd; p.rot+=p.rotSpd;
-      p.x += p.vx + Math.sin(p.wobble)*.3;
+      p.life++; p.wobble+=p.ws; p.rot+=p.rs; p.r+=.1;
+      p.x += p.vx+Math.sin(p.wobble)*.28;
       p.y += p.vy;
-      p.r += .12;
       var prog = p.life/p.maxLife;
-      var a = prog<.12 ? p.maxAlpha*(prog/.12) : prog>.72 ? p.maxAlpha*((1-prog)/.28) : p.maxAlpha;
-
-      if(heroActive){
-        var dx=p.x-heroMx, dy=p.y-heroMy;
-        var dist=Math.sqrt(dx*dx+dy*dy);
-        if(dist < revealR*1.1) a *= Math.pow(dist/(revealR*1.1), 1.4);
+      var a = prog<.12 ? p.maxA*(prog/.12) : prog>.7 ? p.maxA*((1-prog)/.3) : p.maxA;
+      if(active){
+        var dx=p.x-revX, dy=p.y-revY, d=Math.sqrt(dx*dx+dy*dy);
+        if(d < revR*1.1) a *= Math.pow(d/(revR*1.1), 1.5);
       }
       if(p.life>p.maxLife||p.y<-p.r) p.reset(true);
-
-      sctx.save();
-      sctx.translate(p.x,p.y); sctx.rotate(p.rot);
-      var g=sctx.createRadialGradient(0,0,0,0,0,p.r);
-      g.addColorStop(0,'rgba('+p.tint+','+a.toFixed(4)+')');
-      g.addColorStop(.3,'rgba('+p.tint+','+(a*.75).toFixed(4)+')');
-      g.addColorStop(.65,'rgba('+p.tint+','+(a*.3).toFixed(4)+')');
-      g.addColorStop(1,'rgba('+p.tint+',0)');
-      sctx.beginPath();
-      sctx.ellipse(0,0,p.r,p.r*.65,0,0,Math.PI*2);
-      sctx.fillStyle=g; sctx.fill();
-      sctx.restore();
+      sc.save(); sc.translate(p.x,p.y); sc.rotate(p.rot);
+      var sg = sc.createRadialGradient(0,0,0,0,0,p.r);
+      sg.addColorStop(0,'rgba('+p.tint+','+a.toFixed(4)+')');
+      sg.addColorStop(.35,'rgba('+p.tint+','+(a*.7).toFixed(4)+')');
+      sg.addColorStop(.7,'rgba('+p.tint+','+(a*.25).toFixed(4)+')');
+      sg.addColorStop(1,'rgba('+p.tint+',0)');
+      sc.beginPath(); sc.ellipse(0,0,p.r,p.r*.62,0,0,Math.PI*2);
+      sc.fillStyle=sg; sc.fill(); sc.restore();
     });
-  }
 
-  // ── NEURAL NET ──
-  var nodes=[];
-  for(var j=0;j<48;j++) nodes.push({
-    x:Math.random()*W, y:Math.random()*H,
-    vx:(Math.random()-.5)*.3, vy:(Math.random()-.5)*.3,
-    r:Math.random()*1.5+.4, pulse:Math.random()*Math.PI*2
-  });
-  var CDIST=150;
-
-  function drawNeural(){
-    nctx.clearRect(0,0,W,H);
+    /* neural */
+    nc.clearRect(0,0,W,H);
     nodes.forEach(function(n){
       n.pulse+=.012; n.x+=n.vx; n.y+=n.vy;
       if(n.x<0||n.x>W) n.vx*=-1;
@@ -456,44 +320,30 @@ function initHero(){
       for(var b=a+1;b<nodes.length;b++){
         var dx=nodes[a].x-nodes[b].x, dy=nodes[a].y-nodes[b].y;
         var d=Math.sqrt(dx*dx+dy*dy);
-        if(d<CDIST){
-          nctx.beginPath();
-          nctx.moveTo(nodes[a].x,nodes[a].y);
-          nctx.lineTo(nodes[b].x,nodes[b].y);
-          nctx.strokeStyle='rgba(192,57,43,'+((1-d/CDIST)*.08).toFixed(3)+')';
-          nctx.lineWidth=.5; nctx.stroke();
+        if(d<148){
+          nc.beginPath(); nc.moveTo(nodes[a].x,nodes[a].y); nc.lineTo(nodes[b].x,nodes[b].y);
+          nc.strokeStyle='rgba(192,57,43,'+((1-d/148)*.08).toFixed(3)+')';
+          nc.lineWidth=.5; nc.stroke();
         }
       }
-      if(heroActive){
-        var mdx=nodes[a].x-heroMx, mdy=nodes[a].y-heroMy;
+      if(active){
+        var mdx=nodes[a].x-mx, mdy=nodes[a].y-my;
         var md=Math.sqrt(mdx*mdx+mdy*mdy);
-        if(md<180){
-          nctx.beginPath();
-          nctx.moveTo(nodes[a].x,nodes[a].y);
-          nctx.lineTo(heroMx,heroMy);
-          nctx.strokeStyle='rgba(220,70,50,'+((1-md/180)*.22).toFixed(3)+')';
-          nctx.lineWidth=.6; nctx.stroke();
+        if(md<175){
+          nc.beginPath(); nc.moveTo(nodes[a].x,nodes[a].y); nc.lineTo(mx,my);
+          nc.strokeStyle='rgba(220,65,45,'+((1-md/175)*.2).toFixed(3)+')';
+          nc.lineWidth=.6; nc.stroke();
         }
       }
       var pulse=.5+.5*Math.sin(nodes[a].pulse);
-      nctx.beginPath();
-      nctx.arc(nodes[a].x,nodes[a].y,nodes[a].r,0,Math.PI*2);
-      nctx.fillStyle='rgba(192,57,43,'+(pulse*.32+.05).toFixed(3)+')';
-      nctx.fill();
+      nc.beginPath(); nc.arc(nodes[a].x,nodes[a].y,nodes[a].r,0,Math.PI*2);
+      nc.fillStyle='rgba(192,57,43,'+(pulse*.3+.06).toFixed(3)+')'; nc.fill();
     }
+    requestAnimationFrame(update);
   }
-
-  // ── MASTER LOOP ──
-  (function loop(){
-    updateReveal();
-    drawSmoke();
-    drawNeural();
-    requestAnimationFrame(loop);
-  })();
-}
-
-// Start after a short delay to let main.js inject the DOM
-setTimeout(initHero, 100);
+  update();
+})();
 </script>
-<script src="assets/js/main.js" defer></script>
+
 </body>
+</html>

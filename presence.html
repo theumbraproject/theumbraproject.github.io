@@ -5,182 +5,137 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UMBRA · Presence</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=Cinzel:wght@900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=Cinzel:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/main.css">
-<style>
-.presence-hero{
-  min-height:60vh;display:flex;align-items:flex-end;
-  padding:160px 10vw 80px;
-  border-bottom:1px solid rgba(255,255,255,.04);
-  position:relative;overflow:hidden;
-}
-.presence-hero-bg{
-  position:absolute;font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(100px,20vw,260px);
-  color:rgba(255,255,255,.015);letter-spacing:-.02em;
-  right:-2vw;bottom:-2vw;user-select:none;pointer-events:none;line-height:1;
-}
-.presence-hero-content{position:relative;z-index:2}
-.ph-tag{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.55em;text-transform:uppercase;color:#c0392b;margin-bottom:28px;display:flex;align-items:center;gap:14px}
-.ph-tag::before{content:'';width:32px;height:1px;background:#c0392b}
-.ph-title{font-family:'Cinzel',serif;font-size:clamp(48px,9vw,110px);font-weight:900;line-height:.9;letter-spacing:-.02em;color:#eee9e0;text-transform:uppercase}
-
-/* BIO */
-.bio-section{padding:120px 10vw;display:grid;grid-template-columns:1fr 1.8fr;gap:100px;align-items:start}
-.bio-left{position:sticky;top:140px}
-.bio-label{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.55em;text-transform:uppercase;color:#c0392b;margin-bottom:20px}
-.bio-quote{font-family:'Cinzel',serif;font-size:15px;font-weight:400;font-style:italic;line-height:1.9;color:rgba(200,196,188,.4);border-left:1px solid #c0392b;padding-left:24px}
-.bio-right{}
-.bio-p{font-size:14px;line-height:2.4;color:#888;font-weight:300;letter-spacing:.04em;margin-bottom:28px}
-.bio-p strong{color:#ccc8c0;font-weight:500}
-.bio-p:last-child{margin-bottom:0}
-
-/* PRINCIPLES */
-.principles-section{padding:0 10vw 120px}
-.section-header{display:flex;align-items:center;gap:24px;margin-bottom:64px}
-.section-header-label{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.55em;text-transform:uppercase;color:#c0392b;white-space:nowrap}
-.section-header-line{flex:1;height:1px;background:rgba(255,255,255,.05)}
-.principle-list{display:flex;flex-direction:column}
-.principle-item{display:grid;grid-template-columns:80px 1fr;gap:40px;padding:44px 0;border-bottom:1px solid rgba(255,255,255,.04);align-items:start}
-.principle-item:first-child{border-top:1px solid rgba(255,255,255,.04)}
-.p-num{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.3em;color:#c0392b;padding-top:3px}
-.p-title{font-family:'Cinzel',serif;font-size:15px;letter-spacing:.18em;color:#ccc8c0;text-transform:uppercase;margin-bottom:14px}
-.p-text{font-size:13px;line-height:2.2;color:#888;font-weight:300;letter-spacing:.04em}
-
-/* DOMAINS */
-.domains-section{padding:0 10vw 160px;background:#080808;border-top:1px solid rgba(255,255,255,.04)}
-.domains-section .section-header{padding-top:120px}
-.domain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.04)}
-.domain-card{background:#050505;padding:48px 36px;position:relative;overflow:hidden;transition:background .4s}
-.domain-card::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1px;background:#c0392b;transition:width .5s cubic-bezier(.76,0,.24,1)}
-.domain-card:hover{background:#0a0a0a}
-.domain-card:hover::after{width:100%}
-.d-icon{font-family:'Bebas Neue',sans-serif;font-size:52px;color:rgba(192,57,43,.15);line-height:1;margin-bottom:24px;transition:color .4s}
-.domain-card:hover .d-icon{color:rgba(192,57,43,.28)}
-.d-title{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.2em;color:#ccc8c0;text-transform:uppercase;margin-bottom:14px}
-.d-text{font-size:12px;line-height:2.1;color:#888;font-weight:300;letter-spacing:.03em}
-.d-tag{font-family:'Space Mono',monospace;font-size:7px;letter-spacing:.4em;text-transform:uppercase;color:#c0392b;margin-top:24px;opacity:.7}
-
-@media(max-width:900px){
-  .presence-hero{padding:120px 24px 60px}
-  .bio-section{grid-template-columns:1fr;gap:48px;padding:80px 24px}
-  .bio-left{position:static}
-  .principles-section,.domains-section{padding-left:24px;padding-right:24px}
-  .domain-grid{grid-template-columns:1fr}
-  .principle-item{grid-template-columns:60px 1fr;gap:24px}
-}
-</style>
 </head>
 <body>
-<div id="header-slot"></div>
-<main>
-  <section class="presence-hero">
-    <div class="presence-hero-bg">PRESENCE</div>
-    <div class="presence-hero-content">
-      <div class="ph-tag">Who is UMBRA</div>
-      <h1 class="ph-title">THE<br>SHADOW<br>ARCHITECT</h1>
-    </div>
-  </section>
+<canvas id="fx-liquid"></canvas>
+<canvas id="fx-particles"></canvas>
+<div id="fx-vignette"></div>
+<div id="fx-noise"></div>
+<div class="umbra-corner tl"></div><div class="umbra-corner tr"></div>
+<div class="umbra-corner bl"></div><div class="umbra-corner br"></div>
+<div id="umbra-cur"></div><div id="umbra-ring"></div>
+<div id="page-wipe"></div>
 
-  <!-- BIO -->
-  <section class="bio-section">
-    <div class="bio-left sr">
-      <div class="bio-label">— Identity</div>
-      <blockquote class="bio-quote">"The most durable structures are built by those who never appear in the photograph."</blockquote>
-    </div>
-    <div class="bio-right">
-      <p class="bio-p sr">UMBRA is not a person. It is a <strong>function</strong> — the orchestrating intelligence that operates between the visible and the real. The connector of systems. The force that makes disparate pieces cohere into something that works.</p>
-      <p class="bio-p sr sr-d1">By professional training: a <strong>graphic designer and business development strategist</strong>. In practice: something harder to name. The kind of operator who is present in every room that matters, credited in none — and prefers it that way.</p>
-      <p class="bio-p sr sr-d2">UMBRA does not lead from the front. It does not pitch, advertise, or seek visibility. It <strong>builds the infrastructure that others stand on</strong> — the systems, the strategies, the connections — and then steps back into the shadow where the real work happens.</p>
-      <p class="bio-p sr sr-d3">Currently: a contributor to multiple AI products in active development — shaping their definition, their design, and their direction from within. And assembling something larger still. Something that will speak for itself when it is ready.</p>
-    </div>
-  </section>
+<header id="site-header">
+  <a href="index.html" class="logo">U<b>◆</b>MBRA</a>
+  <button class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></button>
+  <nav id="site-nav">
+    <a href="index.html">Home</a>
+    <a href="presence.html" class="active">Presence</a>
+    <a href="work.html">Work</a>
+    <a href="project.html">The Project</a>
+    <a href="contact.html">Signal</a>
+  </nav>
+</header>
 
-  <!-- PRINCIPLES -->
-  <section class="principles-section">
-    <div class="section-header sr">
-      <div class="section-header-label">Operating Principles</div>
-      <div class="section-header-line"></div>
-    </div>
-    <div class="principle-list">
-      <div class="principle-item sr">
-        <div class="p-num">I</div>
-        <div>
-          <div class="p-title">Invisibility as Strategy</div>
-          <div class="p-text">The shadow is not the absence of light. It is light, redirected. Power exercised from the unseen position compounds without resistance — no ego to defend, no brand to protect, no face to save.</div>
-        </div>
-      </div>
-      <div class="principle-item sr sr-d1">
-        <div class="p-num">II</div>
-        <div>
-          <div class="p-title">Structure Over Spectacle</div>
-          <div class="p-text">Systems outlast personalities. Architecture outlasts presence. Build the thing that runs without you — then disappear. The best work needs no introduction because it introduces itself.</div>
-        </div>
-      </div>
-      <div class="principle-item sr sr-d2">
-        <div class="p-num">III</div>
-        <div>
-          <div class="p-title">Orchestration as Art</div>
-          <div class="p-text">The conductor is not the orchestra. Knowing which hand to move, and when, is the highest form of design. UMBRA does not do the work — UMBRA makes the work possible.</div>
-        </div>
-      </div>
-      <div class="principle-item sr sr-d3">
-        <div class="p-num">IV</div>
-        <div>
-          <div class="p-title">Intelligence Without Ego</div>
-          <div class="p-text">The work is the proof. Attribution is noise. Results speak in the language that cannot be disputed — and they speak loudest when no one is taking credit.</div>
-        </div>
-      </div>
-    </div>
-  </section>
+<div class="inner-hero">
+  <div class="inner-hero-bg">PRESENCE</div>
+  <div class="inner-hero-content">
+    <div class="inner-eyebrow">Who is UMBRA</div>
+    <h1 class="inner-title">THE<br>SHADOW<br>ARCHITECT</h1>
+  </div>
+</div>
 
-  <!-- STAT COUNTERS -->
-  <div class="stats-row">
-    <div class="stat-cell">
-      <div class="stat-num"><span class="count-num" data-target="7" data-suffix="+">0+</span></div>
-      <div class="stat-label">Years Operating</div>
-    </div>
-    <div class="stat-cell">
-      <div class="stat-num"><span class="count-num" data-target="3" data-suffix="">0</span></div>
-      <div class="stat-label">Systems in Development</div>
-    </div>
-    <div class="stat-cell">
-      <div class="stat-num" style="color:var(--ember)">∞</div>
-      <div class="stat-label">Public Profiles</div>
+<section class="bio-section">
+  <div class="bio-sticky reveal">
+    <div class="bio-eyebrow">— Identity</div>
+    <blockquote class="bio-quote">"The most durable structures are built by those who never appear in the photograph."</blockquote>
+  </div>
+  <div class="bio-body">
+    <p class="reveal">UMBRA is not a name. It is a <strong>function</strong> — the orchestrating intelligence that operates between the visible and the real. The connector of systems. The force that makes disparate pieces cohere.</p>
+    <p class="reveal d1">By professional training: a <strong>graphic designer and strategic operator</strong>. In practice: something harder to name. The kind of operator who is present in every room that matters, credited in none — and prefers it that way.</p>
+    <p class="reveal d2">UMBRA does not lead from the front. It does not pitch, advertise, or seek visibility. It <strong>builds the infrastructure that others stand on</strong> — the systems, the strategies, the connections — and then steps back into the shadow where the real work happens.</p>
+    <p class="reveal d3">Currently: a contributor to multiple AI products in active development — shaping their definition, their design, and their direction from within. And assembling something larger still.</p>
+  </div>
+</section>
+
+<div class="stats-row">
+  <div class="stat-cell">
+    <div class="stat-number"><span data-count="7" data-suffix="+">0+</span></div>
+    <div class="stat-label">Years Operating</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-number"><span data-count="3" data-suffix="">0</span></div>
+    <div class="stat-label">Systems in Development</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-number stat-inf">∞</div>
+    <div class="stat-label">Public Profiles</div>
+  </div>
+</div>
+
+<section class="principles-section">
+  <div class="s-header reveal">
+    <div class="s-header-text">Operating Principles</div>
+    <div class="s-header-line"></div>
+  </div>
+  <div class="principle reveal">
+    <div class="principle-num">I</div>
+    <div>
+      <div class="principle-title">Invisibility as Strategy</div>
+      <div class="principle-text">The shadow is not the absence of light. It is light, redirected. Power exercised from the unseen position compounds without resistance — no ego to defend, no brand to protect, no face to save.</div>
     </div>
   </div>
-
-  <!-- DOMAINS -->
-  <section class="domains-section">
-    <div class="section-header sr">
-      <div class="section-header-label">Domains</div>
-      <div class="section-header-line"></div>
+  <div class="principle reveal d1">
+    <div class="principle-num">II</div>
+    <div>
+      <div class="principle-title">Structure Over Spectacle</div>
+      <div class="principle-text">Systems outlast personalities. Architecture outlasts presence. Build the thing that runs without you — then disappear. The best work needs no introduction because it introduces itself.</div>
     </div>
-    <div class="domain-grid">
-      <div class="domain-card sr">
-        <div class="d-icon">VS</div>
-        <div class="d-title">Visual Systems</div>
-        <div class="d-text">Identity and communication engineered at a structural level. Every visual decision is a strategic one — the shape of something changes what it means.</div>
-        <div class="d-tag">Form as Doctrine</div>
-      </div>
-      <div class="domain-card sr sr-d1">
-        <div class="d-icon">SE</div>
-        <div class="d-title">Strategic Expansion</div>
-        <div class="d-text">Connecting the right entities at the right moment with the right structure. Growth engineered from within — invisible in motion, undeniable in result.</div>
-        <div class="d-tag">Systemic Leverage</div>
-      </div>
-      <div class="domain-card sr sr-d2">
-        <div class="d-icon">AI</div>
-        <div class="d-title">Machine Intelligence</div>
-        <div class="d-text">Shaping AI products from the inside — product definition, experience architecture, and the narrative that makes a tool feel inevitable rather than invented.</div>
-        <div class="d-tag">Active Development</div>
-      </div>
+  </div>
+  <div class="principle reveal d2">
+    <div class="principle-num">III</div>
+    <div>
+      <div class="principle-title">Orchestration as Art</div>
+      <div class="principle-text">The conductor is not the orchestra. Knowing which hand to move, and when, is the highest form of design. UMBRA does not do the work — UMBRA makes the work possible.</div>
     </div>
-  </section>
-</main>
+  </div>
+  <div class="principle reveal d3">
+    <div class="principle-num">IV</div>
+    <div>
+      <div class="principle-title">Intelligence Without Ego</div>
+      <div class="principle-text">The work is the proof. Attribution is noise. Results speak in the language that cannot be disputed — and they speak loudest when no one is taking credit.</div>
+    </div>
+  </div>
+</section>
 
-<div id="footer-slot"></div>
-<script src="assets/js/main.js" defer></script>
-<canvas id="particles"></canvas>
+<section class="domains-section">
+  <div class="s-header reveal">
+    <div class="s-header-text">Domains</div>
+    <div class="s-header-line"></div>
+  </div>
+  <div class="domains-grid">
+    <div class="domain-card reveal">
+      <div class="domain-icon">VS</div>
+      <div class="domain-title">Visual Systems</div>
+      <div class="domain-text">Identity and communication engineered at a structural level. Every visual decision is a strategic one — the shape of something changes what it means.</div>
+      <div class="domain-tag">Form as Doctrine</div>
+    </div>
+    <div class="domain-card reveal d1">
+      <div class="domain-icon">SE</div>
+      <div class="domain-title">Strategic Expansion</div>
+      <div class="domain-text">Connecting the right entities at the right moment with the right structure. Growth engineered from within — invisible in motion, undeniable in result.</div>
+      <div class="domain-tag">Systemic Leverage</div>
+    </div>
+    <div class="domain-card reveal d2">
+      <div class="domain-icon">MI</div>
+      <div class="domain-title">Machine Intelligence</div>
+      <div class="domain-text">Shaping AI products from the inside — product definition, experience architecture, and the narrative that makes a tool feel inevitable rather than invented.</div>
+      <div class="domain-tag">Active Development</div>
+    </div>
+  </div>
+</section>
+
+<footer id="site-footer">
+  <div>
+    <div class="footer-logo">U<b>◆</b>MBRA</div>
+    <div class="footer-copy">© MMXXV · All rights withheld</div>
+  </div>
+  <a href="contact.html" class="footer-link">Initiate Signal →</a>
+</footer>
+
+<script src="assets/js/main.js"></script>
 </body>
 </html>

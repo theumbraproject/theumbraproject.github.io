@@ -5,109 +5,57 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UMBRA · Signal</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=Cinzel:wght@900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=Cinzel:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/main.css">
-<style>
-.contact-wrap{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;padding-top:100px}
-.contact-left{padding:80px 8vw 80px 10vw;border-right:1px solid rgba(255,255,255,.04);display:flex;flex-direction:column;justify-content:center}
-.contact-right{padding:80px 10vw 80px 8vw;display:flex;flex-direction:column;justify-content:center;background:#080808}
-.cl-tag{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.55em;text-transform:uppercase;color:#c0392b;margin-bottom:32px;display:flex;align-items:center;gap:14px}
-.cl-tag::before{content:'';width:32px;height:1px;background:#c0392b}
-.cl-title{font-family:'Cinzel',serif;font-size:clamp(36px,6vw,80px);font-weight:900;line-height:.9;letter-spacing:-.02em;color:#eee9e0;text-transform:uppercase;margin-bottom:48px}
-.cl-body p{font-size:13px;line-height:2.4;color:#888;font-weight:300;letter-spacing:.04em;margin-bottom:20px}
-.cl-body p strong{color:#ccc8c0;font-weight:500}
-.cl-rule{margin:40px 0;height:1px;background:rgba(255,255,255,.05)}
-.cl-note{display:flex;align-items:flex-start;gap:14px;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.25em;line-height:2;color:#444;text-transform:uppercase}
-.cl-note em{color:#c0392b;font-style:normal;flex-shrink:0;margin-top:1px}
-
-.signal-form{display:flex;flex-direction:column;gap:0}
-.form-group{display:flex;flex-direction:column;gap:10px;margin-bottom:32px}
-.form-group label{font-family:'Space Mono',monospace;font-size:7px;letter-spacing:.55em;text-transform:uppercase;color:#444}
-.form-group input,
-.form-group textarea,
-.form-group select{
-  background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,.07);
-  color:#ccc8c0;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:300;
-  letter-spacing:.06em;padding:12px 0;transition:border-color .3s;outline:none;
-  resize:none;-webkit-appearance:none;appearance:none;border-radius:0;
-}
-.form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus{border-color:#c0392b}
-.form-group input::placeholder,
-.form-group textarea::placeholder{color:#333;letter-spacing:.1em}
-.form-group select option{background:#0a0a0a;color:#ccc8c0}
-.submit-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
-.submit-btn{
-  font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.4em;
-  text-transform:uppercase;color:#ccc8c0;padding:15px 32px;
-  border:1px solid rgba(255,255,255,.1);
-  position:relative;overflow:hidden;transition:border-color .4s;cursor:none;
-  background:none;
-}
-.submit-btn::before{content:'';position:absolute;inset:0;background:#c0392b;transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.76,0,.24,1);z-index:-1}
-.submit-btn:hover{border-color:#c0392b}
-.submit-btn:hover::before{transform:scaleX(1)}
-.submit-note{font-family:'Space Mono',monospace;font-size:7px;letter-spacing:.3em;color:#333;text-transform:uppercase}
-
-/* sending state */
-.submit-btn.sending{opacity:.6;pointer-events:none}
-.form-error{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.3em;color:#c0392b;text-transform:uppercase;margin-top:16px;display:none}
-.form-error.show{display:block}
-
-.form-confirm{display:none;text-align:center;padding:60px 0}
-.form-confirm.show{display:block}
-.fc-icon{font-family:'Bebas Neue',sans-serif;font-size:60px;color:#c0392b;line-height:1;margin-bottom:24px}
-.fc-title{font-family:'Cinzel',serif;font-size:20px;letter-spacing:.3em;color:#ccc8c0;text-transform:uppercase;margin-bottom:16px}
-.fc-text{font-size:12px;line-height:2.3;color:#888;font-weight:300;letter-spacing:.06em}
-
-@media(max-width:900px){
-  .contact-wrap{grid-template-columns:1fr;padding-top:80px}
-  .contact-left{padding:60px 24px;border-right:none;border-bottom:1px solid rgba(255,255,255,.04)}
-  .contact-right{padding:60px 24px}
-}
-</style>
 </head>
 <body>
-<div id="header-slot"></div>
-<div class="contact-wrap">
+<canvas id="fx-liquid"></canvas><canvas id="fx-particles"></canvas>
+<div id="fx-vignette"></div><div id="fx-noise"></div>
+<div class="umbra-corner tl"></div><div class="umbra-corner tr"></div>
+<div class="umbra-corner bl"></div><div class="umbra-corner br"></div>
+<div id="umbra-cur"></div><div id="umbra-ring"></div>
+<div id="page-wipe"></div>
+
+<header id="site-header">
+  <a href="index.html" class="logo">U<b>◆</b>MBRA</a>
+  <button class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></button>
+  <nav id="site-nav">
+    <a href="index.html">Home</a><a href="presence.html">Presence</a>
+    <a href="work.html">Work</a><a href="project.html">The Project</a>
+    <a href="contact.html" class="active">Signal</a>
+  </nav>
+</header>
+
+<div class="contact-layout">
   <div class="contact-left">
-    <div class="cl-tag sr">Secure Channel</div>
-    <h1 class="cl-title sr sr-d1">INITIATE<br>SIGNAL</h1>
-    <div class="cl-body sr sr-d2">
+    <div class="contact-eyebrow reveal">Secure Channel</div>
+    <h1 class="contact-title reveal d1">INITIATE<br>SIGNAL</h1>
+    <div class="contact-body reveal d2">
       <p>UMBRA does not advertise. It does not pitch. It does not seek visibility.</p>
-      <p>If you are here, you already understand why you are here. Signals are received. <strong>Responses are selective.</strong> If your purpose aligns with what is being built, you will hear back.</p>
+      <p>Signals are received. <strong>Responses are selective.</strong> If your purpose aligns with what is being built, you will hear back.</p>
       <p>If you were sent here by someone who knows UMBRA — say so. Context changes everything.</p>
     </div>
-    <div class="cl-rule sr sr-d3"></div>
-    <div class="cl-note sr sr-d3">
-      <em>◆</em>
+    <div class="contact-rule reveal d3"></div>
+    <div class="contact-note reveal d3">
+      <span class="contact-note-icon">◆</span>
       All communications are treated as confidential by default. No signal is ignored — some simply receive silence as their answer.
     </div>
   </div>
 
   <div class="contact-right">
-    <!-- Formspree endpoint — replace YOUR_FORM_ID below -->
-    <form
-      class="signal-form"
-      id="signalForm"
-      action="https://formspree.io/f/YOUR_FORM_ID"
-      method="POST"
-    >
-      <!-- Hidden honeypot to block bots -->
+    <form class="signal-form" id="signal-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
       <input type="text" name="_gotcha" style="display:none">
-      <!-- Tell Formspree not to redirect -->
-      <input type="hidden" name="_subject" value="New signal from UMBRA site">
+      <input type="hidden" name="_subject" value="New signal — UMBRA">
 
-      <div class="form-group sr">
+      <div class="field reveal">
         <label>Origin — How you identify yourself</label>
         <input type="text" name="name" placeholder="Your identifier" required>
       </div>
-      <div class="form-group sr sr-d1">
+      <div class="field reveal d1">
         <label>Channel — Return address</label>
         <input type="email" name="email" placeholder="Email" required>
       </div>
-      <div class="form-group sr sr-d1">
+      <div class="field reveal d1">
         <label>Nature of Signal</label>
         <select name="type">
           <option value="">Select purpose</option>
@@ -119,71 +67,28 @@
           <option value="other">Other</option>
         </select>
       </div>
-      <div class="form-group sr sr-d2">
+      <div class="field reveal d2">
         <label>Transmission</label>
         <textarea name="message" rows="5" placeholder="State your purpose clearly. UMBRA values directness."></textarea>
       </div>
-      <div class="submit-row sr sr-d3">
-        <button type="submit" class="submit-btn" id="submitBtn">Transmit →</button>
-        <div class="submit-note">Routed securely · Identity protected</div>
+      <div class="form-footer reveal d3">
+        <button type="submit" class="form-submit" id="submit-btn">Transmit →</button>
+        <div class="form-secure">Routed securely</div>
       </div>
-      <div class="form-error" id="formError">Transmission failed. Try again or signal directly.</div>
+      <div class="form-error" id="form-error">Transmission failed. Try again.</div>
     </form>
-
-    <div class="form-confirm" id="formConfirm">
-      <div class="fc-icon">◆</div>
-      <div class="fc-title">Signal Received</div>
-      <div class="fc-text">
-        Your transmission has been logged.<br>
-        UMBRA will respond through appropriate channels<br>
-        if alignment exists.
-      </div>
+    <div class="form-confirm" id="form-confirm">
+      <div class="confirm-icon">◆</div>
+      <div class="confirm-title">Signal Received</div>
+      <div class="confirm-text">Your transmission has been logged.<br>UMBRA will respond through appropriate channels<br>if alignment exists.</div>
     </div>
   </div>
 </div>
 
-<div id="footer-slot"></div>
-<script src="assets/js/main.js" defer></script>
-<script>
-var form    = document.getElementById('signalForm');
-var confirm = document.getElementById('formConfirm');
-var errMsg  = document.getElementById('formError');
-var btn     = document.getElementById('submitBtn');
-
-if (form) {
-  form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    btn.classList.add('sending');
-    btn.textContent = 'Transmitting...';
-    errMsg.classList.remove('show');
-
-    var data = new FormData(form);
-
-    fetch(form.action, {
-      method: 'POST',
-      body: data,
-      headers: { 'Accept': 'application/json' }
-    })
-    .then(function(res) {
-      if (res.ok) {
-        form.style.transition = 'opacity .4s';
-        form.style.opacity = '0';
-        setTimeout(function() {
-          form.style.display = 'none';
-          confirm.classList.add('show');
-        }, 400);
-      } else {
-        throw new Error('Server error');
-      }
-    })
-    .catch(function() {
-      btn.classList.remove('sending');
-      btn.textContent = 'Transmit →';
-      errMsg.classList.add('show');
-    });
-  });
-}
-</script>
-<canvas id="particles"></canvas>
+<footer id="site-footer">
+  <div><div class="footer-logo">U<b>◆</b>MBRA</div><div class="footer-copy">© MMXXV · All rights withheld</div></div>
+  <a href="contact.html" class="footer-link">Initiate Signal →</a>
+</footer>
+<script src="assets/js/main.js"></script>
 </body>
 </html>
